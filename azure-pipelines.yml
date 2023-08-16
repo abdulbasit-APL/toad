@@ -82,11 +82,20 @@ stages:
 
             # Use $(System.DefaultWorkingDirectory)
             Write-Host "System Default Working Directory: $(System.DefaultWorkingDirectory)"
+            
           displayName: 'Print Directories'
         - powershell: |
             $env:TOAD_HOME = "$(Build.SourcesDirectory)/Toad\ToadInstallFolder"
             $env:PATH = "$env:PATH;$env:TOAD_HOME"
             # Define Toad deployment command
+            
+            # Show the extracted Toad path
+            Write-Host "Toad installation extracted to: $(Agent.ToolsDirectory)\Toad"
+            
+            # Define the path to the Toad executable
+            $toadExecutable = "$(Build.SourcesDirectory)/Toad\ToadInstallFolder\Toad.exe"
+            
+            
             $toadCommand = "Toad.exe"
             $projectPath = "$(System.DefaultWorkingDirectory)/path/to/your/project"
             $connectionString = "YourConnectionString"
