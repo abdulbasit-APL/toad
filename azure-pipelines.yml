@@ -90,7 +90,7 @@ stages:
             # Define Toad deployment command
             
             # Show the extracted Toad path
-            Write-Host "Toad installation extracted to: $(Agent.ToolsDirectory)\Toad"
+            #Write-Host "Toad installation extracted to: $(Agent.ToolsDirectory)\Toad"
             
             # Define the path to the Toad executable
             $toadExecutable = "$(Build.SourcesDirectory)/Toad\ToadInstallFolder\Toad.exe"
