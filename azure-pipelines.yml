@@ -77,7 +77,14 @@ stages:
           displayName: 'Unzip Folder and List Files'  
             
         - powershell: |
-            $env:TOAD_HOME = "$(Agent.ToolsDirectory)/Toad\ToadInstallFolder"
+            # Use $(Build.SourcesDirectory)
+            Write-Host "Build Sources Directory: $(Build.SourcesDirectory)"
+
+            # Use $(System.DefaultWorkingDirectory)
+            Write-Host "System Default Working Directory: $(System.DefaultWorkingDirectory)"
+          displayName: 'Print Directories'
+        - powershell: |
+            $env:TOAD_HOME = "$(Build.SourcesDirectory)/Toad\ToadInstallFolder"
             $env:PATH = "$env:PATH;$env:TOAD_HOME"
             # Define Toad deployment command
             $toadCommand = "Toad.exe"
@@ -87,5 +94,6 @@ stages:
 
             # Execute the deployment command
             Invoke-Expression $deployCommand
-          displayName: 'Deploy Database Changes'
+          #displayName: 'Deploy Database Changes'
+          displayName: 'Setting Up Environment'
           
