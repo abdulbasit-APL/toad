@@ -61,6 +61,8 @@ stages:
             $destinationPath = "$(Build.SourcesDirectory)/Toad"
             # Set environment variables for Toad
             #Expand-Archive -Path "Toad.zip" -DestinationPath "$(Agent.ToolsDirectory)/Toad"
+            # Unzip the folder
+            Expand-Archive -Path $zipArchivePath -DestinationPath $destinationPath -Force
             $directoryPath = "$(Build.SourcesDirectory)"
             Get-ChildItem -Path $directoryPath
             $env:TOAD_HOME = "$(Agent.ToolsDirectory)/Toad\ToadInstallFolder"
