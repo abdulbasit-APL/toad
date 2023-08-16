@@ -22,7 +22,7 @@ pr:
 stages:  
   
   
-  - stage: 'pre_commit'
+  - stage: 'List_Files'
     displayName: 'Listing Files'
     jobs:
       - job: ListFiles
@@ -57,6 +57,8 @@ stages:
         - powershell: |
             # Set environment variables for Toad
             Expand-Archive -Path "Toad.zip" -DestinationPath "$(Agent.ToolsDirectory)/Toad"
+            $directoryPath = "$(Build.SourcesDirectory)"
+            Get-ChildItem -Path $directoryPath
             $env:TOAD_HOME = "$(Agent.ToolsDirectory)/Toad\ToadInstallFolder"
             $env:PATH = "$env:PATH;$env:TOAD_HOME"
 
