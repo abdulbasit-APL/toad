@@ -55,8 +55,12 @@ stages:
             packageType: 'sdk'
             installationPath: $(Agent.ToolsDirectory)/dotnet
         - powershell: |
+            # Define the path to the zip archive
+            $zipArchivePath = "$(Build.SourcesDirectory)/Toad.zip"
+            # Define the destination path for extraction
+            $destinationPath = "$(Build.SourcesDirectory)/Toad"
             # Set environment variables for Toad
-            Expand-Archive -Path "Toad.zip" -DestinationPath "$(Agent.ToolsDirectory)/Toad"
+            #Expand-Archive -Path "Toad.zip" -DestinationPath "$(Agent.ToolsDirectory)/Toad"
             $directoryPath = "$(Build.SourcesDirectory)"
             Get-ChildItem -Path $directoryPath
             $env:TOAD_HOME = "$(Agent.ToolsDirectory)/Toad\ToadInstallFolder"
@@ -71,3 +75,4 @@ stages:
             # Execute the deployment command
             Invoke-Expression $deployCommand
           displayName: 'Deploy Database Changes'
+          
