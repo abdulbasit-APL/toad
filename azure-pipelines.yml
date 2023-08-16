@@ -69,14 +69,9 @@ stages:
             Write-Host "File: $($_.FullName)"
             }
             
-            # List files within the extracted folder
-            #$extractedFiles = Get-ChildItem -Path $destinationPath
-            #foreach ($file in $extractedFiles) {
-            #Write-Host "File: $($file.Name)"
-            #}
             
-            #$directoryPath = "$(Build.SourcesDirectory)"
-            #Get-ChildItem -Path $directoryPath
+            $directoryPath = "$(Build.SourcesDirectory)"
+            Get-ChildItem -Path $directoryPath
             #$env:TOAD_HOME = "$(Agent.ToolsDirectory)/Toad\ToadInstallFolder"
             #$env:PATH = "$env:PATH;$env:TOAD_HOME"
           displayName: 'Unzip Folder and List Files'  
