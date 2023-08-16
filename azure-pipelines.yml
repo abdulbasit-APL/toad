@@ -1,0 +1,62 @@
+###################################
+# When to create a pipeline run
+###################################
+trigger:
+  branches:
+    include:
+      - main
+      - dev
+      - QA
+      - prod
+      
+  paths:
+    exclude:
+    - devops/*    
+pr:
+- master
+- dev/*
+- QA/*
+- prod/*
+- main/*
+
+
+jobs:
+- job: ListFiles
+  pool:
+    vmImage: 'windows-latest'
+
+  steps:
+  - checkout: self  # Checkout the repository content
+
+  - powershell: |
+      # Define the directory path
+      $directoryPath = "$(Build.SourcesDirectory)"
+
+      # List all files in the directory
+      Get-ChildItem -Path $directoryPath
+    displayName: 'List Files in Directory'
+- job: DeployToDatabase
+  pool:
+    vmImage: 'windows-latest'  # Use a Windows-based agent
+
+  steps:
+  - task: UseDotNet@2  # Use this task for Windows-based environments
+    inputs:
+      packageType: 'sdk'
+      installationPath: $(Agent.ToolsDirectory)/dotnet
+
+  - powershell: |
+      # Set environment variables for Toad
+      Expand-Archive -Path "Toad.zip" -DestinationPath "$(Agent.ToolsDirectory)/Toad"
+      $env:TOAD_HOME = "$(Agent.ToolsDirectory)/Toad\ToadInstallFolder"
+      $env:PATH = "$env:PATH;$env:TOAD_HOME"
+
+      # Define Toad deployment command
+      $toadCommand = "Toad.exe"
+      $projectPath = "$(System.DefaultWorkingDirectory)/path/to/your/project"
+      $connectionString = "YourConnectionString"
+      $deployCommand = "$toadCommand /execute:$projectPath /server:$connectionString"
+
+      # Execute the deployment command
+      Invoke-Expression $deployCommand
+    displayName: 'Deploy Database Changes'
