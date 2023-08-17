@@ -45,7 +45,7 @@ stages:
     displayName: 'Deploy Database Changes'
     jobs:
       - job: Deploy_Database
-        displayName: 'DeployDatabase'
+        displayName: 'Deploy Database'
         continueOnError: true
         pool:
           vmImage: "windows-latest"
