@@ -151,17 +151,11 @@ stages:
               Invoke-Expression -Command "& '$toadDirectory\tdt.exe' -batch -runscript=`"$scriptPath`""
             }
             
-            #foreach ($scriptFile in $scriptFiles) {
-            #  $scriptPath = $scriptFile.FullName
-            #  Invoke-Expression "powershell -ExecutionPolicy Bypass -File `"$scriptPath`""
-            #}
-            
-            
-            $connectionString = "YourConnectionString"
-            $deployCommand = "$toadCommand /execute:$projectPath /server:$connectionString"
+            #$connectionString = "YourConnectionString"
+            #$deployCommand = "$toadCommand /execute:$projectPath /server:$connectionString"
             # Execute the deployment command
-            Invoke-Expression $deployCommand
-          displayName: 'Run Toad DevOps PowerShell Scripts on Targets'
+            #Invoke-Expression $deployCommand
+          displayName: 'Run Toad DevOps PowerShell Scripts'
           
         - task: PowerShellOnTargetMachines@3
           inputs:
