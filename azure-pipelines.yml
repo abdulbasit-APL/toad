@@ -131,6 +131,7 @@ stages:
         - powershell: |
             # Define the path to the Toad executable
             $toadCommand = "$(Build.SourcesDirectory)/Toad\Toad\tdt.exe"
+            $toadDirectory = "$(Build.SourcesDirectory)/Toad\Toad"
             
             # Define the path to the Toad project file within the repository
             #$projectPath = "$(System.DefaultWorkingDirectory)/path/to/your/project"
@@ -141,10 +142,18 @@ stages:
             # Get all .ps1 files in the folder
             $scriptFiles = Get-ChildItem -Path $scriptsFolderPath -Filter *.ps1
             # Loop through each script and execute using the Toad DevOps Toolkit
+            
+            # Loop through each script and execute it using Toad
             foreach ($scriptFile in $scriptFiles) {
-              $scriptPath = $scriptFile.FullName
-              Invoke-Expression "powershell -ExecutionPolicy Bypass -File `"$scriptPath`""
+              $scriptPath = Join-Path -Path $toadDirectory -ChildPath $scriptFile
+              Write-Host "Executing Toad script: $($scriptFile.Name)"
+              Start-Process -FilePath .\tdt.exe -ArgumentList "-batch", "-runscript=$scriptPath" -Wait
             }
+            
+            #foreach ($scriptFile in $scriptFiles) {
+            #  $scriptPath = $scriptFile.FullName
+            #  Invoke-Expression "powershell -ExecutionPolicy Bypass -File `"$scriptPath`""
+            #}
             
             
             $connectionString = "YourConnectionString"
