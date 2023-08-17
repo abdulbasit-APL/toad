@@ -72,7 +72,9 @@ stages:
         
         - powershell: |
             # PowerShell script to print the version
-            Write-Host "PowerShell Version: $PSVersionTable.PSVersion"
+            #Write-Host "PowerShell Version: $PSVersionTable.PSVersion"
+            $PSVersionTable.PSVersion
+            
           displayName: 'Print PowerShell Version'
         
         - powershell: |
