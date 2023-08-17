@@ -54,6 +54,7 @@ stages:
           inputs:
             packageType: 'sdk'
             installationPath: $(Build.SourcesDirectory)/dotnet
+            version: '3.1.x'
         - powershell: |
             # Define the path to the zip archive
             $zipArchivePath = "$(Build.SourcesDirectory)/Toad.zip"
@@ -85,24 +86,24 @@ stages:
             
           displayName: 'Print Directories'
         - powershell: |
-            $env:TOAD_HOME = "$(Build.SourcesDirectory)/Toad\ToadInstallFolder"
+            $env:TOAD_HOME = "$(Build.SourcesDirectory)/Toad\Toad"
             $env:PATH = "$env:PATH;$env:TOAD_HOME"
             # Define Toad deployment command
             
-            # Show the extracted Toad path
-            #Write-Host "Toad installation extracted to: $(Agent.ToolsDirectory)\Toad"
             
             # Define the path to the Toad executable
-            $toadExecutable = "$(Build.SourcesDirectory)/Toad\ToadInstallFolder\Toad.exe"
-            
-            
-            $toadCommand = "Toad.exe"
+            $toadExecutable = "$(Build.SourcesDirectory)/Toad\Toad\tdt.exe"
+            $toadCommand = "$(Build.SourcesDirectory)/Toad\Toad\tdt.exe"
+          displayName: 'Setting Up Environment'
+          
+        - powershell: |
+            # Define the path to the Toad executable
+            $toadCommand = "$(Build.SourcesDirectory)/Toad\Toad\tdt.exe"
+            # Define the path to the Toad project file within the repository
             $projectPath = "$(System.DefaultWorkingDirectory)/path/to/your/project"
             $connectionString = "YourConnectionString"
             $deployCommand = "$toadCommand /execute:$projectPath /server:$connectionString"
-
             # Execute the deployment command
             Invoke-Expression $deployCommand
-          #displayName: 'Deploy Database Changes'
-          displayName: 'Setting Up Environment'
+          displayName: 'Deploy Database Changes using Toad'
           
