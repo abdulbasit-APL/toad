@@ -109,10 +109,13 @@ stages:
         - powershell: |
             # Define the path to the Toad executable
             $toadCommand = "$(Build.SourcesDirectory)/Toad\Toad\tdt.exe"
+            
             # Define the path to the Toad project file within the repository
             #$projectPath = "$(System.DefaultWorkingDirectory)/path/to/your/project"
+        
             # Set the folder path containing your PowerShell scripts
-            $scriptsFolderPath = "$(Build.SourcesDirectory)\Scripts"
+            $scriptsFolderPath = "$(Build.SourcesDirectory)\Scripts\Scripts"
+       
             # Get all .ps1 files in the folder
             $scriptFiles = Get-ChildItem -Path $scriptsFolderPath -Filter *.ps1
             # Loop through each script and execute using the Toad DevOps Toolkit
@@ -120,6 +123,8 @@ stages:
               $scriptPath = $scriptFile.FullName
               Invoke-Expression "powershell -ExecutionPolicy Bypass -File `"$scriptPath`""
             }
+            
+            
             $connectionString = "YourConnectionString"
             $deployCommand = "$toadCommand /execute:$projectPath /server:$connectionString"
             # Execute the deployment command
@@ -132,5 +137,6 @@ stages:
             UserName: 'abc'
             UserPassword: 'xyz'
             ScriptType: 'FilePath'
-            ScriptPath: '$(System.DefaultWorkingDirectory)/path/to/your/project' 
-          displayName: 'Deploy Database on Target Machine'  
+            scriptPath: '$(Build.SourcesDirectory)\ExecuteAllScripts.ps1'
+            arguments: '-ExecutionPolicy Bypass'            
+          displayName: 'Execute All PowerShell Scripts on Target Machines'  
