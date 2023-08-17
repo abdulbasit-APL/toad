@@ -1,0 +1,10 @@
+steps:
+    - task: ManualValidation@0
+      timeoutInMinutes: 1440 # task times out in 1 day
+      inputs:
+        notifyUsers: |
+          abdulbasit@analytics.com.pk
+         
+        instructions: 'Please validate the build configuration resume to deploy on Dev Environment'
+        environment: 'Dev'
+        onTimeout: 'resume'

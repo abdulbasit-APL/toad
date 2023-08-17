@@ -23,7 +23,7 @@ stages:
   
   
   - stage: 'List_Files'
-    displayName: 'Listing ALL Files'
+    displayName: 'Listing Files'
     jobs:
       - job: ListFiles
         displayName: 'Listing All Files'
