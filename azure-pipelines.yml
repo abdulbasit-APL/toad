@@ -69,6 +69,12 @@ stages:
             packageType: 'sdk'
             installationPath: $(Build.SourcesDirectory)/dotnet
             version: '5.x'
+        
+        - powershell: |
+            # PowerShell script to print the version
+            Write-Host "PowerShell Version: $PSVersionTable.PSVersion"
+          displayName: 'Print PowerShell Version'
+        
         - powershell: |
             # Define the path to the zip archive
             $zipArchivePath = "$(Build.SourcesDirectory)/Toad.zip"
