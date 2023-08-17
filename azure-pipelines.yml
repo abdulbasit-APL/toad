@@ -39,7 +39,21 @@ stages:
             # List all files in the directory
             Get-ChildItem -Path $directoryPath
           displayName: 'List Files in Directory'
-
+      - job: Check_OS
+        displayName: 'Checking Agent OS Architecture'
+        pool:
+          vmImage: 'windows-latest'
+        steps:
+        - powershell: |
+            $osArchitecture = $env:Agent_OSArchitecture
+            if ($osArchitecture -eq "X64") {
+              Write-Host "Running on a 64-bit agent"
+              # Add PowerShell steps specific to 64-bit agent here
+            } else {
+              Write-Host "Running on a 32-bit agent"
+              # Add PowerShell steps specific to 32-bit agent here
+            }
+          displayName: 'Check Agent OS Architecture'
 
   - stage: 'Deploy_Database_Changes'
     displayName: 'Deploy Database Changes'
