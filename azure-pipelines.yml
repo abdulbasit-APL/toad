@@ -54,7 +54,7 @@ stages:
           inputs:
             packageType: 'sdk'
             installationPath: $(Build.SourcesDirectory)/dotnet
-            version: '3.1.x'
+            version: '5.x'
         - powershell: |
             # Define the path to the zip archive
             $zipArchivePath = "$(Build.SourcesDirectory)/Toad.zip"
@@ -64,18 +64,28 @@ stages:
             #Expand-Archive -Path "Toad.zip" -DestinationPath "$(Agent.ToolsDirectory)/Toad"
             # Unzip the folder
             Expand-Archive -Path $zipArchivePath -DestinationPath $destinationPath -Force
-            
             # List all files within the extracted folder and its subdirectories
             Get-ChildItem -Path $destinationPath -File -Recurse | ForEach-Object {
             Write-Host "File: $($_.FullName)"
             }
             
             
+            # Define the path to the zip archive
+            $zipArchivePathScripts = "$(Build.SourcesDirectory)/Scripts.zip"
+            # Define the destination path for extraction
+            $destinationPathScripts = "$(Build.SourcesDirectory)/Scripts"
+            # Unzip the folder
+            Expand-Archive -Path $zipArchivePathScripts -DestinationPath $destinationPathScripts -Force
+            
+            # List all files within the extracted folder and its subdirectories
+            Get-ChildItem -Path $destinationPathScripts -File -Recurse | ForEach-Object {
+            Write-Host "File: $($_.FullName)"
+            }
+            
+            
             $directoryPath = "$(Build.SourcesDirectory)"
             Get-ChildItem -Path $directoryPath
-            #$env:TOAD_HOME = "$(Agent.ToolsDirectory)/Toad\ToadInstallFolder"
-            #$env:PATH = "$env:PATH;$env:TOAD_HOME"
-          displayName: 'Unzip Folder and List Files'  
+          displayName: 'Unzipping Folders and Listing all Files'  
             
         - powershell: |
             # Use $(Build.SourcesDirectory)
@@ -100,10 +110,27 @@ stages:
             # Define the path to the Toad executable
             $toadCommand = "$(Build.SourcesDirectory)/Toad\Toad\tdt.exe"
             # Define the path to the Toad project file within the repository
-            $projectPath = "$(System.DefaultWorkingDirectory)/path/to/your/project"
+            #$projectPath = "$(System.DefaultWorkingDirectory)/path/to/your/project"
+            # Set the folder path containing your PowerShell scripts
+            $scriptsFolderPath = "$(Build.SourcesDirectory)\Scripts"
+            # Get all .ps1 files in the folder
+            $scriptFiles = Get-ChildItem -Path $scriptsFolderPath -Filter *.ps1
+            # Loop through each script and execute using the Toad DevOps Toolkit
+            foreach ($scriptFile in $scriptFiles) {
+              $scriptPath = $scriptFile.FullName
+              Invoke-Expression "powershell -ExecutionPolicy Bypass -File `"$scriptPath`""
+            }
             $connectionString = "YourConnectionString"
             $deployCommand = "$toadCommand /execute:$projectPath /server:$connectionString"
             # Execute the deployment command
             Invoke-Expression $deployCommand
-          displayName: 'Deploy Database Changes using Toad'
+          displayName: 'Run Toad DevOps PowerShell Scripts on Targets'
           
+        - task: PowerShellOnTargetMachines@3
+          inputs:
+            Machines: 'dbserver_int.fabrikam.com:5986'
+            UserName: 'abc'
+            UserPassword: 'xyz'
+            ScriptType: 'FilePath'
+            ScriptPath: '$(System.DefaultWorkingDirectory)/path/to/your/project' 
+          displayName: 'Deploy Database on Target Machine'  
