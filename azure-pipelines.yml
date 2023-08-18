@@ -156,7 +156,7 @@ stages:
               $logFilePath = Join-Path -Path $logDirectory -ChildPath "$($scriptFile.BaseName)_Log.txt"
               Write-Host "Executing Toad script: $($scriptFile.Name)"
               #Start-Process -FilePath .\tdt.exe -ArgumentList "-batch", "-runscript=$scriptPath" -Wait
-              Invoke-Expression -Command "& '$toadDirectory\tdt.exe' -batch -runscript=`"$scriptPath`"" > $logFilePath 2>&1
+              Invoke-Expression -Command "& '$toadDirectory\tdt.exe' -batch -runscript=`"$scriptPath`"" 2>&1 | Out-File -FilePath $logFilePath -Append
             }
             
             #$connectionString = "YourConnectionString"
@@ -168,7 +168,7 @@ stages:
         - task: PublishBuildArtifacts@1
           displayName: 'Publishing Log File'
           inputs:
-            PathtoPublish: '$(Build.SourcesDirectory)'
+            PathtoPublish: '$(Build.SourcesDirectory)\ToadLogs'
             ArtifactName: 'ToadLogs'
             publishLocation: 'Container'
             
