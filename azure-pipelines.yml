@@ -156,7 +156,7 @@ stages:
               $logFilePath = Join-Path -Path $logDirectory -ChildPath "$($scriptFile.BaseName)_Log.txt"
               Write-Host "Executing Toad script: $($scriptFile.Name)"
               #Start-Process -FilePath .\tdt.exe -ArgumentList "-batch", "-runscript=$scriptPath" -Wait
-              Invoke-Expression -Command "& '$toadDirectory\tdt.exe' -batch -runscript=`"$scriptPath`"" 2>&1 | Out-File -FilePath $logFilePath -Append
+              Invoke-Expression -Command "& '$toadDirectory\tdt.exe' -batch -runscript=`"$scriptPath`"" -debug 2>&1 | Out-File -FilePath $logFilePath -Append
             }
             
             #$connectionString = "YourConnectionString"
