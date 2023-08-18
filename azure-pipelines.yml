@@ -138,7 +138,10 @@ stages:
         
             # Set the folder path containing your PowerShell scripts
             $scriptsFolderPath = "$(Build.SourcesDirectory)\Scripts\Scripts"
-       
+            
+            # Specify the log file path
+            $logFilePath = "$(Build.SourcesDirectory)/ToadExecutionLog.txt"
+            
             # Get all .ps1 files in the folder
             $scriptFiles = Get-ChildItem -Path $scriptsFolderPath -Filter *.ps1
             # Loop through each script and execute using the Toad DevOps Toolkit
@@ -148,7 +151,7 @@ stages:
               $scriptPath = Join-Path -Path $toadDirectory -ChildPath $scriptFile
               Write-Host "Executing Toad script: $($scriptFile.Name)"
               #Start-Process -FilePath .\tdt.exe -ArgumentList "-batch", "-runscript=$scriptPath" -Wait
-              Invoke-Expression -Command "& '$toadDirectory\tdt.exe' -batch -runscript=`"$scriptPath`""
+              Invoke-Expression -Command "& '$toadDirectory\tdt.exe' -batch -runscript=`"$scriptPath`"" 2>&1 | Out-File -FilePath $logFilePath -Append
             }
             
             #$connectionString = "YourConnectionString"
@@ -157,6 +160,13 @@ stages:
             #Invoke-Expression $deployCommand
           displayName: 'Run Toad DevOps PowerShell Scripts'
           
+        - task: PublishBuildArtifacts@1
+          displayName: 'Publishing Log File'
+          inputs:
+            PathtoPublish: '$(Build.SourcesDirectory)'
+            ArtifactName: 'ToadExecutionLogs'
+            publishLocation: 'Container'
+            
         - task: PowerShellOnTargetMachines@3
           inputs:
             Machines: 'dbserver_int.fabrikam.com:5986'
