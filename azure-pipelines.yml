@@ -177,7 +177,10 @@ stages:
             Machines: 'dbserver_int.fabrikam.com:5986'
             UserName: 'abc'
             UserPassword: 'xyz'
+            psSessionName: 'MyPSSession'
+            psSessionProtocol: 'Https'  # Specify the protocol: Http or Https
             ScriptType: 'FilePath'
             scriptPath: '$(Build.SourcesDirectory)\ExecuteAllScripts.ps1'
-            arguments: '-ExecutionPolicy Bypass'            
+            arguments: '-ExecutionPolicy Bypass'
+            errorActionPreference: 'stop'            
           displayName: 'Execute All PowerShell Scripts on Target Machines'  
