@@ -139,8 +139,12 @@ stages:
             # Set the folder path containing your PowerShell scripts
             $scriptsFolderPath = "$(Build.SourcesDirectory)\Scripts\Scripts"
             
-            # Specify the log file path
-            $logFilePath = "$(Build.SourcesDirectory)/ToadExecutionLog.txt"
+            # Specify the log directory
+            $logDirectory = "$(Build.SourcesDirectory)\ToadLogs"
+            # Create the log directory if it doesn't exist
+            if (-not (Test-Path -Path $logDirectory -PathType Container)) {
+              New-Item -Path $logDirectory -ItemType Directory
+            }
             
             # Get all .ps1 files in the folder
             $scriptFiles = Get-ChildItem -Path $scriptsFolderPath -Filter *.ps1
@@ -149,9 +153,10 @@ stages:
             # Loop through each script and execute it using Toad
             foreach ($scriptFile in $scriptFiles) {
               $scriptPath = Join-Path -Path $toadDirectory -ChildPath $scriptFile
+              $logFilePath = Join-Path -Path $logDirectory -ChildPath "$($scriptFile.BaseName)_Log.txt"
               Write-Host "Executing Toad script: $($scriptFile.Name)"
               #Start-Process -FilePath .\tdt.exe -ArgumentList "-batch", "-runscript=$scriptPath" -Wait
-              Invoke-Expression -Command "& '$toadDirectory\tdt.exe' -batch -runscript=`"$scriptPath`"" 2>&1 | Out-File -FilePath $logFilePath -Append
+              Invoke-Expression -Command "& '$toadDirectory\tdt.exe' -batch -runscript=`"$scriptPath`"" > $logFilePath 2>&1
             }
             
             #$connectionString = "YourConnectionString"
@@ -164,7 +169,7 @@ stages:
           displayName: 'Publishing Log File'
           inputs:
             PathtoPublish: '$(Build.SourcesDirectory)'
-            ArtifactName: 'ToadExecutionLogs'
+            ArtifactName: 'ToadLogs'
             publishLocation: 'Container'
             
         - task: PowerShellOnTargetMachines@3
